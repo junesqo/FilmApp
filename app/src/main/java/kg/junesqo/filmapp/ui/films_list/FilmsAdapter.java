@@ -1,22 +1,28 @@
 package kg.junesqo.filmapp.ui.films_list;
 
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import kg.junesqo.filmapp.OnItemClickListener;
+import kg.junesqo.filmapp.R;
 import kg.junesqo.filmapp.data.models.Film;
 import kg.junesqo.filmapp.databinding.ItemFilmBinding;
 
 public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.FilmViewHolder> {
 
-    private OnItemClickListener onItemClickListener;
 
     private List<Film> films = new ArrayList<>();
 
@@ -32,15 +38,22 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.FilmViewHold
         return new FilmViewHolder(binding);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull FilmViewHolder holder, int position) {
-        holder.onBind(films.get(position));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
+    @Override
+    public void onBindViewHolder(@NonNull FilmViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        holder.onBind(films.get(position));
+        Bundle bundle = new Bundle();
+        bundle.putString("filmId", films.get(position).getId());
+        holder.itemView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_filmsFragment_to_filmDetailFragment, bundle));
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Bundle bundle = new Bundle();
+//                bundle.putString("filmId", films.get(position).getId());
+//                Navigation.createNavigateOnClickListener(R.id.action_filmsFragment_to_filmDetailFragment, bundle);
+//                Log.e("FilmAdapter", films.get(position).getId());
+//            }
+//        });
     }
 
     @Override
@@ -59,6 +72,7 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.FilmViewHold
         public void onBind(Film film) {
             binding.tvTitle.setText(film.getTitle());
             binding.tvDescription.setText(film.getDescription());
+            Glide.with(binding.ivBanner).load(film.getMovieBanner()).into(binding.ivBanner);
         }
     }
 }

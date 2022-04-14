@@ -1,4 +1,4 @@
-package kg.junesqo.filmapp.ui.films_list;
+package kg.junesqo.filmapp.ui.film_detail;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -6,59 +6,57 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.List;
 
 import kg.junesqo.filmapp.App;
 import kg.junesqo.filmapp.R;
 import kg.junesqo.filmapp.data.models.Film;
+import kg.junesqo.filmapp.databinding.FragmentFilmDetailBinding;
 import kg.junesqo.filmapp.databinding.FragmentFilmsBinding;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class FilmsFragment extends Fragment {
+public class FilmDetailFragment extends Fragment {
 
-    private FragmentFilmsBinding binding;
-    private FilmsAdapter adapter;
-
-    public FilmsFragment() {
-        // Required empty public constructor
-    }
-
+    private FragmentFilmDetailBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new FilmsAdapter();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentFilmsBinding.inflate(inflater, container, false);
-        binding.recycler.setAdapter(adapter);
+        // Inflate the layout for this fragment
+        binding = FragmentFilmDetailBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        App.api.getFilms().enqueue(new Callback<List<Film>>() {
+        Bundle bundle = getArguments();
+        String filmId = bundle.getString("filmId");
+        App.api.getFilmDetail(filmId).enqueue(new Callback<Film>() {
             @Override
-            public void onResponse(Call<List<Film>> call, Response<List<Film>> response) {
+            public void onResponse(Call<Film> call, Response<Film> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    adapter.setFilms(response.body());
+                    Glide.with(binding.filmImage).load(response.body().getMovieBanner()).into(binding.filmImage);
+                    binding.filmTitle.setText(response.body().getTitle());
+                    binding.filmDate.setText("("+response.body().getReleaseDate()+")");
+                    binding.filmDescription.setText(response.body().getDescription());
+                    binding.filmOriginalTitle.setText(response.body().getOriginalTitle());
+                    binding.filmDirector.setText(response.body().getDirector());
                 } else {
                     Snackbar.make(
                             binding.getRoot(),
@@ -70,7 +68,7 @@ public class FilmsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Film>> call, Throwable t) {
+            public void onFailure(Call<Film> call, Throwable t) {
                 Snackbar.make(
                         binding.getRoot(),
                         t.getLocalizedMessage(),
@@ -80,5 +78,4 @@ public class FilmsFragment extends Fragment {
             }
         });
     }
-
 }

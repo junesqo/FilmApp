@@ -1,5 +1,7 @@
 package kg.junesqo.filmapp.data.models;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Film {
@@ -9,6 +11,13 @@ public class Film {
     @SerializedName("original_title")
     String originalTitle;
     String description;
+    @SerializedName("release_date")
+    String releaseDate;
+    String director;
+    @SerializedName("movie_banner")
+    String movieBanner;
+
+
 
     public String getId() {
         return id;
@@ -24,5 +33,17 @@ public class Film {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public String getMovieBanner() {
+        return movieBanner;
     }
 }

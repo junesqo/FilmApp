@@ -9,5 +9,14 @@
         android:id="@+id/filmsFragment"
         android:name="kg.junesqo.filmapp.ui.films_list.FilmsFragment"
         android:label="fragment_films"
-        tools:layout="@layout/fragment_films" />
+        tools:layout="@layout/fragment_films" >
+        <action
+            android:id="@+id/action_filmsFragment_to_filmDetailFragment"
+            app:destination="@id/filmDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filmDetailFragment"
+        android:name="kg.junesqo.filmapp.ui.film_detail.FilmDetailFragment"
+        android:label="fragment_film_detail"
+        tools:layout="@layout/fragment_film_detail" />
 </navigation>
